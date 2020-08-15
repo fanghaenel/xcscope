@@ -1,45 +1,38 @@
-; -*-Emacs-Lisp-*-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; File:         xcscope.el
-; RCS:          $RCSfile: xcscope.el,v $ $Revision: 1.14 $ $Date: 2002/04/10 16:59:00 $ $Author: darrylo $
-; Description:  cscope interface for (X)Emacs
-; Author:       Darryl Okahata
-; Created:      Wed Apr 19 17:03:38 2000
-; Modified:     Thu Apr  4 17:22:22 2002 (Darryl Okahata) darrylo@soco.agilent.com
-; Language:     Emacs-Lisp
-; Package:      N/A
-; Status:       Experimental
-;
-; (C) Copyright 2000, 2001, 2002, Darryl Okahata <darrylo@sonic.net>,
-;     all rights reserved.
-; GNU Emacs enhancements (C) Copyright 2001,
-;         Triet H. Lai <thlai@mail.usyd.edu.au>
-; Fuzzy matching and navigation code (C) Copyright 2001,
-;         Steven Elliott <selliott4@austin.rr.com>
-;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ALPHA VERSION 0.96
+;;; xcscope.el --- cscope interface for Emacs
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
+;; Copyright (C) 2000-2002 Darryl Okahata
+;;               2001 Triet H. Lai
+;;               2001 Steven Elliott
+;;               2020 Thomas Fanghaenel
 ;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; Author: Darryl Okahata <darrylo@sonic.net>
+;; Maintainer: Thomas Fanghaenel <thomas.fanghaenel@gmail.com>
+;; Keywords: c, tools, unix
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This program is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free Software
+;; Foundation, either version 3 of the License, or (at your option) any later
+;; version.
+;;
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+;;
+;; You should have received a copy of the GNU General Public License along with
+;; this program.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; This is a cscope interface for (X)Emacs.
-;; It currently runs under Unix only.
 ;;
 ;; Using cscope, you can easily search for where symbols are used and defined.
 ;; Cscope is designed to answer questions like:
@@ -53,15 +46,9 @@
 ;;         Where is this source file in the directory structure?
 ;;         What files include this header file?
 ;;
-;; Send comments to one of:     darrylo@soco.agilent.com
-;;                              darryl_okahata@agilent.com
-;;                              darrylo@sonic.net
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; ***** INSTALLATION *****
-;;
-;; * NOTE: this interface currently runs under Unix only.
 ;;
 ;; This module needs a shell script called "cscope-indexer", which
 ;; should have been supplied along with this emacs-lisp file.  The
@@ -1994,7 +1981,7 @@ using the mouse."
 	      (set-process-filter cscope-process cscope-filter-func)
 	      (set-process-sentinel cscope-process cscope-sentinel-func)
 	      (set-marker (process-mark cscope-process) (point))
-	      (process-kill-without-query cscope-process)
+	      (set-process-query-on-exit-flag cscope-process nil)
 	      (if cscope-running-in-xemacs
 		  (setq modeline-process ": Searching ..."))
 	      (setq buffer-read-only t)
@@ -2127,7 +2114,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
 		   cscope-indexing-script args))
       (set-process-sentinel cscope-unix-index-process
 			    'cscope-unix-index-files-sentinel)
-      (process-kill-without-query cscope-unix-index-process)
+      (set-process-query-on-exit-flag cscope-unix-index-process nil)
       )
     ))
 
